@@ -34,39 +34,36 @@
         var btnAffiche = document.getElementById('btnAffiche')
         var btnCache = document.getElementsByName('btnCache')[0] // <= TABLEAU
         var survol = document.getElementById('parTexte')
+        var postit = document.getElementById('PostIt')
 
         btnAffiche.addEventListener('click', function () { //Action au clic sur afficher
-            console.log("clic sur afficher")
-            var postit = document.getElementById('PostIt')
-            if (postit.style.visibility != "visible") {
-                postit.style.visibility = "visible"
-            }
-            postit.innerHTML = "Vous avez cliqué sur le bouton 'Affiche' !"
+            writeInside(postit, "Vous avez cliqué sur le bouton 'Affiche' !")
         })
-        btnCache.addEventListener('click', function(){
-            console.log("clic sur cacher")
-            var postit = document.getElementById('PostIt')
-            if (postit.style.visibility == "visible"){
-                postit.style.visibility = "hidden"
-            }
+        btnCache.addEventListener('click', function () {
+            hide(postit)
         })
         survol.addEventListener('mouseover', function () {
-            var postit = document.getElementById('PostIt')
-            if (postit.style.visibility == "visible"){
-                postit.innerHTML = "C’est gentil de me survoler..."
-            }else{
-                postit.style.visibility = "visible"
-                postit.innerHTML = "C’est gentil de me survoler..."
-
-            }
+            writeInside(postit, "C’est gentil de me survoler...")
         })
         survol.addEventListener('mouseout', function () {
-            var postit = document.getElementById('PostIt')
-            if (postit.style.visibility == "visible"){
-                postit.style.visibility = "hidden"
-            }
+            hide(postit)
         })
     })
+
+    function display(element){
+        element.style.visibility = "visible"
+    }
+
+    function hide(element){
+        element.style.visibility = "hidden"
+    }
+
+    function writeInside(element, text){
+        display(element)
+        element.innerHTML = text
+    }
+
+
 </script>
 
 </body>

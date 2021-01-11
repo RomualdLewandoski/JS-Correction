@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Post-It</title>
     <style type="text/css">
         #PostIt {
-            position:absolute;
-            left:153px;
-            top:40px;
-            width:187px;
-            height:50px;
-            z-index:1;
+            position: absolute;
+            left: 153px;
+            top: 40px;
+            width: 187px;
+            height: 50px;
+            z-index: 1;
             background-color: #FFFF66;
             layer-background-color: #FFFF66;
             border: 1px none #000000;
@@ -19,43 +19,55 @@
     </style>
 </head>
 
-<body bgcolor="#FFFFFF">
+<body>
 <h3>Post-It</h3>
-<input type="button" id="btnCache" value="Cache"/>
+<input type="button" name="btnCache" value="Cache"/>
 <input type="button" id="btnAffiche" value="Affiche"/>
-<div id="PostIt">Ceci est un Post It</div>
+<div id="PostIt"></div>
 <br>
 <br>
-<a id="parTexte">Merci de bien vouloir me survoler</a>
+<p id="parTexte">Merci de bien vouloir me survoler</p>
 
-<script type="text/JavaScript">
-    <!--
-    // renseigne le texte voulu dans la div et la rend visible
-    function affiche(texte) {
-        document.getElementById('PostIt').innerHTML=texte;
-        document.getElementById('PostIt').style.visibility = 'visible';
-    };
+<script>
+    window.addEventListener('load', function () {
+        console.log("document chargé")
+        var btnAffiche = document.getElementById('btnAffiche')
+        var btnCache = document.getElementsByName('btnCache')[0] // <= TABLEAU
+        var survol = document.getElementById('parTexte')
 
-    // masque la div
-    function cache() {
-        document.getElementById('PostIt').style.visibility = 'hidden';
-    };
+        btnAffiche.addEventListener('click', function () { //Action au clic sur afficher
+            console.log("clic sur afficher")
+            var postit = document.getElementById('PostIt')
+            if (postit.style.visibility != "visible") {
+                postit.style.visibility = "visible"
+            }
+            postit.innerHTML = "Vous avez cliqué sur le bouton 'Affiche' !"
+        })
+        btnCache.addEventListener('click', function(){
+            console.log("clic sur cacher")
+            var postit = document.getElementById('PostIt')
+            if (postit.style.visibility == "visible"){
+                postit.style.visibility = "hidden"
+            }
+        })
+        survol.addEventListener('mouseover', function () {
+            var postit = document.getElementById('PostIt')
+            if (postit.style.visibility == "visible"){
+                postit.innerHTML = "C’est gentil de me survoler..."
+            }else{
+                postit.style.visibility = "visible"
+                postit.innerHTML = "C’est gentil de me survoler..."
 
-    // auto-exécution : implémente les handler d'événements
-    (function(){
-        // bouton cache
-        var btnCache = document.getElementById("btnCache");
-        btnCache.addEventListener("click",cache, false);
-        // boutton affiche
-        var btnAffiche = document.getElementById("btnAffiche");
-        btnAffiche.addEventListener("click",function(){affiche('Vous avez cliqué sur le bouton Affiche')}, false);
-        // div de texte sensible
-        var parTexte = document.getElementById("parTexte");
-        parTexte.addEventListener("mouseover",function(){affiche('C\'est gentil de me survoler...')}, false);
-        parTexte.addEventListener("mouseout",cache, false);
-
-    }());
-    -->
+            }
+        })
+        survol.addEventListener('mouseout', function () {
+            var postit = document.getElementById('PostIt')
+            if (postit.style.visibility == "visible"){
+                postit.style.visibility = "hidden"
+            }
+        })
+    })
 </script>
+
 </body>
 </html>

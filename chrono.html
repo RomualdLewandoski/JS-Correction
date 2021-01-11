@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Chronomètre</title>
+    <style type="text/css">
+
+        fieldset {
+            width: 25%;
+            text-align: center;
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        input {
+            border-radius: 5px 5px 5px 5px;
+        }
+
+        input:hover {
+            cursor: pointer;
+        }
+
+        #btnStart:hover {
+            background-color: green;
+        }
+
+        #btnPause:hover {
+            background-color: cyan;
+        }
+
+        #btnStop:hover {
+            background-color: red;
+        }
+
+        #chrono {
+            font-size: 1.5em;
+        }
+
+        .invisible {
+            display: none;
+        }
+
+        .visible {
+            display: inline;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .blue {
+            color: blue;
+        }
+
+    </style>
+</head>
+
+<body>
+<h1>Chronomètre :</h1>
+<br>
+<fieldset>
+    <legend>Mon chrono</legend>
+    <input type="button" id="btnStart" value="Start"/>
+    <input type="button" id="btnPause" value="Pause" class="invisible"/>
+    <input type="button" id="btnStop" value="Stop" class="invisible"/>
+    <p id="chrono">
+        <span id="h">00</span>:<span id="m">00</span>:<span id="s">00</span>
+    </p>
+</fieldset>
+
+<script>
+    window.addEventListener('load', function () {
+        //Je définit les éléments
+        var btnStart = document.getElementById('btnStart')
+        var btnPause = document.getElementById('btnPause')
+        var btnStop = document.getElementById('btnStop')
+
+        var hoursSpan = document.getElementById('h')
+        var minutesSpan = document.getElementById('m')
+        var secondsSpan = document.getElementById('s')
+        //Je définit la variable de mon timer (mon timer serra définit plus tard)
+        var monTimer
+        //Je définit le nombre de secondes a 0
+        var nbSeconds = 0;
+
+
+        //fonction auto executable
+        // doit etre entre () et contenir () avant la fin ex:
+        /*(function () {
+
+        }<ceci sert a executer la fonction>()</>)*/
+        //Creation d'une fonction :
+        // - Doit commencer par function
+        // - PEUT avoir avoir un nom ex : function maFunction
+        // - Doit etre suivit de () dans lequel serront mis les arguments
+        // /!\ Si pas de paramètres on doit quand meme avoir ces ()
+        // - on Ouvre la fonction avec {
+        // - on ajoute le code
+        // - on ferme la fonction avec }
+        (function () {
+            //je définit le parametre paramTps DE btnStart avec comme valeur nbSeconds
+            btnStart.paramTps = nbSeconds
+            btnPause.paramTps = nbSeconds
+
+            //j'enregiste un event AU click SUR btnStart, qui va lancer startChrono
+            btnStart.addEventListener('click', startChrono)
+        }())
+
+
+        //ma fonction startChrono
+        function startChrono(event) {
+            btnStart.removeEventListener('click', startChrono)
+            btnPause.setAttribute('value', "Pause")
+            btnPause.removeEventListener('click', startChrono)
+            btnPause.addEventListener('click', pauseChrono)
+            btnStop.addEventListener('click', stopChrono)
+            btnStart.setAttribute('class', 'invisible')
+            btnPause.setAttribute('class', 'visible')
+            btnStop.setAttribute('class', 'visible')
+
+            // algo de calcul de nombre haures, minutes et secondes écoulées
+            var startTime = new Date();
+
+            //console.log("10" + 1)
+            //console.log(parseInt("10") + 1)
+
+            monTimer = setInterval(function () {
+                // 1- Convertir en secondes :
+                var seconds = Math.round(
+                    (new Date().getTime() - startTime.getTime()) / 1000
+                    + event.target.paramTps); // e représente l'event déclencheur
+                    // event.target représente l'objet déclencheur
+                    // ici : bouton start ou bouton pause
+                    // (cette prop a été ajoutée aux boutons)
+                    // 2- Extraire les heures:
+
+                var hours = parseInt(seconds / 3600);
+                seconds = seconds % 3600; // secondes restantes
+                    // 3- Extraire les minutes:
+                var minutes = parseInt(seconds / 60);
+                seconds = seconds % 60; // secondes restantes
+                    // 4- afficher dans le span
+                /*chronoP.innerHTML = ajouteUnZero(hours)
+                    + ":" + ajouteUnZero(minutes)
+                    + ":" + ajouteUnZero(seconds);
+                    // 5- incrémenter le nombre de secondes*/
+                hoursSpan.innerHTML = ajouteUnZero(hours)
+                minutesSpan.innerHTML = ajouteUnZero(minutes)
+                secondsSpan.innerHTML = ajouteUnZero(seconds)
+
+                nbSeconds += 1;
+            }, 1000); // fin de function anonyme dans setInterval()
+        }
+
+        function ajouteUnZero(number){
+            if (number < 10){
+                number = "0" + number //String + int = String
+            }
+            return number
+        }
+
+        function pauseChrono(){
+            clearInterval(monTimer)
+            btnPause.removeEventListener('click', pauseChrono)
+            btnPause.setAttribute('value', "Reprendre")
+            btnPause.addEventListener('click', startChrono)
+            btnPause.paramTps = nbSeconds
+        }
+
+        function stopChrono(){
+            clearInterval(monTimer)
+            btnPause.removeEventListener('click', pauseChrono)
+            btnStop.removeEventListener('click', stopChrono)
+            btnStart.addEventListener('click', startChrono)
+            hoursSpan.innerHTML = ajouteUnZero(0)
+            minutesSpan.innerHTML = ajouteUnZero(0)
+            secondsSpan.innerHTML = ajouteUnZero(0)
+            nbSeconds = 0
+            btnPause.setAttribute('class', 'invisible')
+            btnStop.setAttribute('class', 'invisible')
+            btnStart.setAttribute('class', 'visible')
+        }
+
+    })
+
+</script>
+
+
+<!--<script>
+    // init variables
+    var decompte; // ref objet timer
+    var tpsEcoule = 0; // nbre secondes
+    // refs objets DOM
+    var chronoP = document.getElementById("chrono");
+    var btnStart = document.getElementById("btnStart");
+    var btnPause = document.getElementById("btnPause");
+    var btnStop = document.getElementById("btnStop");
+
+    // fonction auto-exécution
+    (function() {
+        // capture event clic sur btn start
+        btnStart.addEventListener("click", startChrono, false);
+        // ajoute une propriété aux objets button
+        btnStart.paramTps = 0;
+        btnPause.paramTps = 0;
+    })();
+
+
+    // ajoute un car 0 si nécessaire en début de chaîne
+    function ajouteUnZero(temps) { // temps est de type numérique
+        var tpsAvecZero;
+        if (temps < 10) {
+            tpsAvecZero = "0" + temps; // concaténation avec conversion implicite
+        } else {
+            tpsAvecZero = temps;
+        }
+        return tpsAvecZero;
+    }
+
+
+
+    // démarre chrono et masque bouton start affiche boutons pause et stop
+    function startChrono(e) {
+        // désactive event bouton start
+        btnStart.removeEventListener("click", startChrono, false);
+
+        // désactive event bouton pause
+        btnPause.removeEventListener("click", startChrono, false);
+
+        // Masquage du btn star et afichage du btn pause et stop
+        btnStart.setAttribute('class', "invisible"); // masque btn start
+        btnPause.setAttribute('class', "visible"); // affiche btn pause
+        btnStop.setAttribute('class', "visible"); // affiche btn stop
+        chronoP.setAttribute('class', "green"); // affiche en vert le texte du chrono
+
+        // active event btn pause
+        btnPause.value = "Pause"; // libellé btn pause
+        btnPause.addEventListener("click", pauseChrono, false);
+
+        // active event btn stop
+        btnStop.addEventListener("click", stopChrono, false);
+
+
+        // algo de calcul de nombre heures, minutes et secondes écoulées
+        var startTime = new Date();
+        decompte = setInterval(function() {
+            // 1- Convertir en secondes :
+            var seconds = Math.round((new Date().getTime() - startTime.getTime()) / 1000 + e.target.paramTps);  // e représente l'event déclencheur
+                                                                                                                // e.target représente l'objet déclencheur
+                                                                                                                // ici : bouton start ou bouton pause
+                                                                                                                // (cette prop a été ajoutée aux boutons)
+
+            // 2- Extraire les heures:
+            var hours = parseInt(seconds / 3600);
+            seconds = seconds % 3600; // secondes restantes
+
+            // 3- Extraire les minutes:
+            var minutes = parseInt(seconds / 60);
+            seconds = seconds % 60; // secondes restantes
+
+            // 4- afficher dans le span
+            chronoP.innerHTML = ajouteUnZero(hours) +
+                ":" + ajouteUnZero(minutes) +
+                ":" + ajouteUnZero(seconds);
+
+            // 5- incrémenter le nombre de secondes
+            tpsEcoule += 1;
+
+
+        }, 1000); // fin de function anonyme dans setInterval()
+    } // fin de function startChrono
+
+
+
+    // arrête le chrono et modifie texte bouton
+    function pauseChrono() {
+        // affiche en bleu le texte du chrono pour montre la pause du chrono
+        chronoP.setAttribute('class', "blue");
+
+        // désactive timer
+        clearInterval(decompte);
+
+        // renseigne la propriété ajpoutée à ce bouton
+        btnPause.value = "Reprendre";
+
+        //(mémo du temps déjà écoulé pour reprise ultérieure)
+        btnPause.paramTps = tpsEcoule;
+
+        // bascule fonction pause en fonction start sur évé clic btn pause
+        btnPause.removeEventListener("click", pauseChrono, false);
+        btnPause.addEventListener("click", startChrono, false);
+
+
+    } // fin de function pauseChrono()
+
+    // stoppe chrono et masque boutons pause et stop
+    function stopChrono() {
+        // stop timer
+        clearInterval(decompte);
+
+        // active évé btn start
+        btnStart.addEventListener("click", startChrono, false);
+        // désactive évé btn pause et stop
+        btnPause.removeEventListener("click", startChrono, false);
+        btnStop.removeEventListener("click", stopChrono, false);
+
+        // réinitialise le temps écoulé
+        tpsEcoule = 0;
+        btnStart.paramTps = tpsEcoule;
+
+        // réaffiche en couleur std
+        chronoP.removeAttribute('class');
+        // réinitialise l'affichage du span
+        chronoP.innerHTML = "00:00:00";
+        // masque boutons
+        btnPause.setAttribute('class', "invisible");
+        btnStop.setAttribute('class', "invisible");
+        // réaffiche btn start
+        btnStart.setAttribute('class', "visisible");
+    } // fin de function stopChrono()
+
+</script> -->
+</body>
+
+</html>

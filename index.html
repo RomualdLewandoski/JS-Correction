@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Manipulons le DOM</h2>
+
+<input type="radio" name="btnRadChoix" value="Semaine"/> Semaine
+<br/>
+<input type="radio" name="btnRadChoix" value="Week-end"/> Week-end
+<br/>
+
+<input type="button" name="btn" id="btn" value="Choix" onclick="testerBouton();">
+<br/>
+<input type="text" name="txtChoix" id="txti" value="" size="20" maxlength="10"/>
+<br/>
+<input type="text" name="txtChoix" id="txtj" value="" size="20" maxlength="10"/>
+<br/>
+<input type="text" name="txtChoix" id="txtk" value="" size="20" maxlength="10"/>
+
+<script>
+    function testerBouton(){
+        var boutonRadio = document.getElementsByName("btnRadChoix")
+        var inputTextI = document.getElementById('txti')
+        var inputTextJ = document.getElementById('txtj')
+        var inputTextK = document.getElementById('txtk')
+        console.log(boutonRadio);
+        /**
+         * [
+         *  ELEMENT1,
+         *  ELEMENT2,
+         *  ELEMENTn...
+         * ]
+         *
+         * Index: position de l'élément dans le tableau /!\ un tableau commence a 0 on va utiliser les [] pour spécifier l'index
+         *
+         *
+         * [
+         * "nom" => "Toto",
+         * "prenom" => "Tutu",
+         * "age" => 18
+         * ]
+         * Pour récupérer le nom je peut utiliser [0] OU ET PLUTOT on va donné le nom qui va identifier la valeur
+         * on appel ça une clé [<K,V>]
+         * ["nom"] donne "Toto"
+         *
+         */
+        for (var i = 0; i < boutonRadio.length; i++){
+            let vraiBouton = boutonRadio[i]
+            if (vraiBouton.checked){
+                inputTextI.value = vraiBouton.value;
+            }
+        }
+
+        var j = 0;
+        while (j < boutonRadio.length){
+            let vraiBouton = boutonRadio[j]
+            if (vraiBouton.checked){
+                inputTextJ.value = vraiBouton.value;
+            }
+            j++;
+        }
+
+        let k;
+        for (k in boutonRadio){
+            let vraiBouton = boutonRadio[k]
+            if (vraiBouton.checked){
+                inputTextK.value = vraiBouton.value;
+            }
+        }
+
+        //Pour i avec comme valeur par defaut 0, temps que i est plus petit que la taille de mon tableau
+        // je fait mon traitement PUIS j'incrémente i de 1
+
+    }
+</script>
+
+</body>
+</html>

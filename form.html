@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>JavaScript - Contrôle Formulaire</title>
+</head>
+
+<body>
+<h2>Contrôle Formulaire</h2>
+Saisissez un texte puis pressez le bouton 'Contrôle'<br/>
+<form id="formsaisie" action="http://www.id-formation.fr" method="get">
+    <input type="text" id="txt" name="txtSaisie" size="20" required/>
+    <br/>
+    <!-- construction classique
+    <input type="submit" value="Contrôler1" onclick="return verifForm(this.form.txtSaisie.value);" />
+     variante JS moderne -->
+    <input type="button" id="btnDOM0" value="Contrôler2"/>
+    <input type="submit" id="btnDOM2" value="Contrôler3"/>
+</form>
+
+<script>
+    function verifForm(inputValue) {
+        if (inputValue.length < 2) {
+            alert("Le champs de text dois avoir au minimum 2 caractères")
+            return false
+        } else {
+            alert("La valeur du champs de texte est : " + inputValue)
+            return true
+        }
+    }
+
+    window.addEventListener('load', function () {
+        var buttonDOM0 = document.getElementById('btnDOM0')
+        var form = document.getElementById('formsaisie')
+
+        buttonDOM0.addEventListener('click', function () {
+            var inputValue = form.txtSaisie.value.trim()
+            if (inputValue.length == 0) {
+                alert("Le champs de text dois avoir au minimum 2 caractères")
+            } else {
+
+               /* let maRegex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,14}$/g)
+
+                if(inputValue.match(maRegex)){
+                    alert("c'est bon")
+
+                }else{
+                    alert("c'est pas bon")
+                }*/
+                let maRegex = new RegExp(/chocolatin+[\w]/g)
+
+                if (inputValue.match(maRegex)){
+                    alert('PETIT PAINS!!!!!!')
+                }
+            }
+        })
+
+        form.addEventListener('submit', function (event) {
+            var inputValue = form.txtSaisie.value.trim()
+            if (inputValue.length == 0) {
+                alert("Le champs de text dois avoir au minimum 1 caractères")
+                event.preventDefault()
+            } else {
+                //alert("La valeur du champs de texte est : "+inputValue)
+
+                event.preventDefault()
+
+                if (inputValue.startsWith('@')) {
+                    alert('c\'est pas bon')
+                } else {
+                    if (inputValue.endsWith('@')) {
+                        alert('c\'est pas bon')
+                    } else {
+                        if (inputValue.search(/@/) == -1) {
+                            alert('c\'est pas bon')
+                        } else {
+                            let nbArobase = 0
+                            for (var i = 0; i < inputValue.length; i++) {
+                                let currentChar = inputValue[i]
+                                if (currentChar == "@") {
+                                    nbArobase += 1;
+                                }
+                            }
+                            if (nbArobase != 1) {
+                                alert('c\'est pas bon')
+                            } else {
+                                if (inputValue.startsWith('.') || inputValue.endsWith('.')) {
+                                    alert("c'est pas bon")
+                                } else {
+                                    let tableauDeMonEmail = inputValue.split('@')
+                                    let partieApresArobase = tableauDeMonEmail[1]
+                                    console.log(partieApresArobase);
+                                    if (partieApresArobase.search(/\./) == -1) {
+                                        alert('c\'est pas bon')
+                                    } else {
+                                        let specialchar = false;
+                                        for (var i = 0; i < inputValue.length; i++) {
+                                            if (specialchar == true) {
+                                                break;
+                                            }
+                                            switch (inputValue[i]) {
+                                                case "#":
+                                                case "\"":
+                                                case "\'":
+                                                case "~":
+                                                case "&":
+                                                case "{":
+                                                    specialchar = true
+                                                    break;
+                                            }
+                                        }
+                                        if (specialchar) {
+                                            alert('c\'est pas bon')
+                                        } else {
+                                            alert("c'est bon")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+    })
+</script>
+
+
+<!-- <script>
+     // fonction classique qui contrôle le submit du form
+     function verifForm(chaine) {
+         if(chaine.length < 2)
+         {
+             alert("La chaîne doit comporter au moins 2 caractères.");
+             return false; // interrompt le submit
+         }
+         else
+         {
+             alert("Vous avez saisi : '" + chaine + "'");
+             return true; // autorise le submit
+         }
+     };
+
+     // variante JS moderne
+     var verifForm2 = function() {
+         var txt = document.getElementById("txt").value;
+         if(txt.length < 2)
+         {
+             alert("La chaîne doit comporter au moins 2 caractères.");
+         }
+         else
+         {
+             alert("Vous avez saisi : '" + txt + "'");
+             document.getElementById('formsaisie').submit(); // soumission du form
+         }
+     };
+
+     // variante JS moderne : activation capture événements
+     var btnDOM0 = document.getElementById("btnDOM0");
+     btnDOM0.onclick = verifForm2;
+     var btnDOM2 = document.getElementById("btnDOM2");
+     btnDOM2.addEventListener("click",verifForm2, false);
+ </script> -->
+
+</body>
+</html>

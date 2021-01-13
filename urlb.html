@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Receptionning</title>
+</head>
+<body>
+<h2>Deuxième page</h2>
+<p>
+    Informations reçues :
+</p>
+<!-- élément html qui recevera les informations passées dans l'url-->
+<span id="recu"></span>
+<br>
+<!-- élément html qui recevera les informations passées dans l'url de manière dynamique-->
+<span id="recu2"></span>
+</body>
+
+<script>
+
+    /*var monUrl = decodeURI(window.location.href)
+
+    //Etape je sépare la partie avant le ? et la partie apres
+    var split1 = monUrl.split('?') // UN TABLEAU
+    var partieUrl = split1[0] // http://127.0.0.1:8080/urlb.html
+    var partieParams = split1[1] //number=45&texte=stephane
+    //Etape je sépare les différent paramètres
+    var split2 = partieParams.split('&') // TABLEAU !
+    var param1 = split2[0] // number=45
+    var param2 = split2[1] // texte=stephane
+    //Etape 3 Je sépare la clé de la valeur
+    var splitParam1 = param1.split("=")//tableau
+    var key1 = splitParam1[0] // number
+    var val1 = splitParam1[1] // 45
+
+    var splitParam2 = param2.split("=")//tableau
+    var key2 = splitParam2[0] // texte
+    var val2 = splitParam2[1] // stephane
+
+    console.log(key1+" ", val1)
+    console.log(key2+" ", val2)
+
+    document.getElementById("recu").innerHTML=key1 + " : " + val1
+    document.getElementById("recu2").innerHTML=key2 + " : " + val2*/
+
+
+    //var loc = new URL(window.location.href)
+    //console.log(loc.searchParams.get("texte"))
+
+    var monUrl = new URL(window.location.href)
+    document.getElementById("recu").innerHTML= "number : " + monUrl.searchParams.get("number")
+    document.getElementById("recu2").innerHTML="texte : " + monUrl.searchParams.get("texte")
+</script>
+
+</html>

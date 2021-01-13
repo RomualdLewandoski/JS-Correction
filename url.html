@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Envoi des trucs js</title>
+</head>
+<body>
+<h2>Première page</h2>
+<form action="urlb.html" method="get" id="monForm">
+    <p>
+        Un nombre SVP : <input type="number" name="number" id="nombre"/>
+    </p>
+    <p>
+        Un texte SVP : <input type="text" name="texte" id="texte"/>
+    </p>
+    <input id="btn" type="submit" value="Envoyer du texte dans une autre page !"/>
+</form>
+
+</body>
+
+<script>
+    window.addEventListener('load', function () {
+        var button = document.getElementById('btn')
+        var number = document.getElementById('nombre')
+        var texte = document.getElementById('texte')
+        var monForm = document.getElementById('monForm')
+
+        console.log(window.location)
+
+        /*button.addEventListener('click', function () {
+            var monUrl = "urlb.html?number="+number.value+"&texte="+texte.value
+            window.location.href = encodeURI(monUrl)
+        })*/
+
+        monForm.addEventListener('submit', function (event) {
+            if (texte.value.length == 0 || number.value.length == 0){
+                alert('tu dois remplir les champs')
+                event.preventDefault()
+            }
+        })
+
+    })
+</script>
+
+
+<!--<script>
+    var btn = document.getElementById('btn');
+    btn.addEventListener('click',maSuperFonctionjs,false);
+
+    function maSuperFonctionjs(){
+        var txt = document.getElementById('texte').value;
+        var nombre = document.getElementById('nombre').value;
+        // avec le location.replace on n'alimente pas l'historique donc pas de retour arrière possible avec le bouton du navigateur
+        //location.replace(encodeURI("08b Passage information soluce.html?t="+txt+"&n="+nombre));
+
+        // avec le location.href on alimente l'historique donc un retour arrière est possible
+        location.href = encodeURI("urlb.html?t="+txt+"&n="+nombre);
+    }
+</script>-->
+</html>

@@ -1,0 +1,18 @@
+{
+  "atk1": {
+    "nom": "PicPic",
+    "puissance": 65,
+    "ppMax": 20,
+    "ppCurrent": 20,
+    "type": "Vol",
+    "precision": 100
+  },
+  "atk2": {
+    "nom": "Charge",
+    "puissance": 25,
+    "ppMax": 20,
+    "ppCurrent": 10,
+    "type": "Normal",
+    "precision": 100
+  }
+}

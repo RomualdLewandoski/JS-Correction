@@ -1,0 +1,30 @@
+#app{
+    background-image: url("assets/Grassland.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+}
+
+.pokemon-container-other{
+    position: absolute;
+    width: calc(100% - 40px);
+    height: 45%;
+    background-color: yellow;
+    top: 20px;
+    left: 20px;
+}
+
+.pokemon-image-container-other{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+}
+
+.pokemon-container-self{
+    position: absolute;
+    width: calc(100% - 40px);
+    height: 45%;
+    background-color: blue;
+    bottom: 20px;
+    left: 20px;
+}

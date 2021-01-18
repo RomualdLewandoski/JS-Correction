@@ -1,5 +1,13 @@
+@font-face {
+    font-family: "Pkmn";
+    src: url('assets/DigimonBasic.ttf');
+}
+
+body{
+    font-family: "Pkmn";
+}
 #app{
-    background-image: url("assets/Grassland.png");
+    background-image: url("assets/Volcano.png");
     background-size: cover;
     background-repeat: no-repeat;
     height: 100%;
@@ -9,22 +17,107 @@
     position: absolute;
     width: calc(100% - 40px);
     height: 45%;
-    background-color: yellow;
+    /*background-color: yellow;*/
     top: 20px;
     left: 20px;
 }
 
 .pokemon-image-container-other{
     position: absolute;
-    width: 50%;
+    width: 45%;
     height: 100%;
+    /*background-color: lime;*/
+    right: 5%;
 }
+
+.pokemon-stats-container-other{
+    position: absolute;
+    background-color: white;
+    border-radius: 10px;
+    border: black solid 3px;
+    width: 45%;
+    height: 50%;
+    top: 5%;
+    left: 1%;
+    padding: 10px;
+}
+
+
 
 .pokemon-container-self{
     position: absolute;
     width: calc(100% - 40px);
     height: 45%;
-    background-color: blue;
+    /*background-color: blue;*/
     bottom: 20px;
     left: 20px;
+}
+
+.pokemon-image-container-self{
+    position: absolute;
+    width: 45%;
+    height: 100%;
+    /*background-color: lime;*/
+    left: 5%;
+}
+
+.pokemon-stats-container-self{
+    position: absolute;
+    background-color: white;
+    border-radius: 10px;
+    border: black solid 3px;
+    width: 45%;
+    height: 50%;
+    top: 5%;
+    right: 1%;
+    padding: 10px;
+}
+
+.text-box{
+    position: absolute;
+    padding: 10px;
+    width: 80%;
+    height: 20%;
+    background-color: white;
+    bottom: 0;
+    left: 10%;
+    border: black 5px solid;
+    border-radius: 10px;
+    color: black;
+    font-family: "Pkmn";
+    font-size: 26px;
+
+}
+
+.btn-attacks{
+    position: absolute;
+    width: 25%;
+    height: 20%;
+    background-color: gold;
+    border-radius: 10px;
+    color: white;
+    bottom: 10%;
+    right: 12%;
+    text-align: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.atk-container{
+    position: absolute;
+    width: 50%;
+    height: 60%;
+    bottom: 10%;
+}
+
+.btn-atk{
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 45%;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    width: 45%;
 }

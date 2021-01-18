@@ -3,21 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="pokemon.css">
 </head>
 <body class="h-100">
 
 <div id="app">
 
-    <div class="pokemon-container-other"></div>
-    <div class="pokemon-container-self"></div>
+    <div class="pokemon-container-other" style="visibility: hidden">
+        <div class="pokemon-stats-container-other">
+            <div class="row m-0">
+                <h1 id="pokemonOtherName"></h1>
+                <h2> Lvl. <span id="pokemonOtherLevel"></span></h2>
+            </div>
+
+            <div class="progress mt-4">
+                <div class="progress-bar bg-success" id="pokemonOtherHPBar" role="progressbar" style="width: 0%"
+                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="text-center">
+                <h3><span id="pokemonOtherCurrentHp">Vie</span>/<span id="pokemonOtherMaxHp">Max</span></h3>
+            </div>
+        </div>
+        <div class="pokemon-image-container-other ">
+            <img id="pokemonOtherSprite" src="" height="100%" style="position: absolute;transform: scaleX(-1);">
+
+        </div>
+
+    </div>
+    <div class="pokemon-container-self" style="visibility: hidden">
+        <div class="pokemon-stats-container-self">
+            <div class="row m-0">
+                <h1 id="pokemonSelfName"></h1>
+                <h2> Lvl. <span id="pokemonSelfLevel"></span></h2>
+            </div>
+
+            <div class="progress mt-4">
+                <div class="progress-bar bg-success" id="pokemonSelfHPBar" role="progressbar" style="width: 0%"
+                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="text-center">
+                <h3><span id="pokemonSelfCurrentPv">Vie</span>/<span id="pokemonSelfMaxPv">Max</span></h3>
+            </div>
+
+        </div>
+        <div class="pokemon-image-container-self">
+            <img id="pokemonSelfSprite" src="" height="100%" style="position: absolute;transform: scaleX(-1);">
+        </div>
+
+        <div class="btn-attacks">
+            Attaquer
+        </div>
+
+        <div class="atk-container">
+
+        </div>
+
+    </div>
+
+    <div id="textBox" class="text-box" style="visibility: hidden">
+    </div>
+
+    <audio id="myAudio">
+        <source src="assets/BGM-battle.mp3" type="audio/mpeg">
+    </audio>
 
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script>
+    var monPokemon = {
+        nom: "Laggron",
+        level: 50,
+        maxPV: 254,
+        currentPv: 254,
+        attaques: [
+            {
+                nom: "Surf",
+                power: 80,
+                maxPP: 15,
+                currentPP: 15
+            },
+            {
+                nom: "Séisme",
+                power: 60,
+                maxPP: 10,
+                currentPP: 10
+            }, {
+                nom: "Vibraqua",
+                power: 45,
+                maxPP: 15,
+                currentPP: 15
+            }, {
+                nom: "Laser Glace",
+                power: 55,
+                maxPP: 15,
+                currentPP: 15
+            }
+        ],
+        status: "none",
+        image: "https://www.pokepedia.fr/images/thumb/6/68/Laggron-RS.png/250px-Laggron-RS.png"
+    }
+    var otherPokemon = {
+        nom: "Groudon",
+        level: 60,
+        maxPV: 340,
+        currentPv: 340,
+        attaques: [
+            {
+                nom: "Séisme",
+                power: 60,
+                maxPP: 10,
+                currentPP: 10
+            },
+            {
+                nom: "Lance Flamme",
+                power: 40,
+                maxPP: 15,
+                currentPP: 15
+            }, {
+                nom: "Griffe",
+                power: 25,
+                maxPP: 20,
+                currentPP: 20
+            }, {
+                nom: "Trempette",
+                power: 0,
+                maxPP: 15,
+                currentPP: 15
+            }
+        ],
+        status: "none",
+        image: "https://www.pokepedia.fr/images/thumb/5/5f/Groudon-RS.png/800px-Groudon-RS.png"
+    }
+
+    if (!localStorage.getItem('pokemon')) {
+        localStorage.setItem('pokemon', JSON.stringify(monPokemon))
+    } else {
+        monPokemon = JSON.parse(localStorage.getItem('pokemon'))
+    }
+
+    window.addEventListener('load', async function () {
+        //POKEMON OTHER
+        var pokemonOtherBox = document.getElementsByClassName('pokemon-container-other')[0]
+        var pokemonOtherName = document.getElementById('pokemonOtherName')
+        var pokemonOtherLevel = document.getElementById('pokemonOtherLevel')
+        var pokemonOtherHpBar = document.getElementById('pokemonOtherHPBar')
+        var pokemonOtherCurrentHp = document.getElementById('pokemonOtherCurrentHp')
+        var pokemonOtherMaxHp = document.getElementById('pokemonOtherMaxHp')
+        var pokemonOtherSprite = document.getElementById('pokemonOtherSprite')
+        //POKEMON SELF
+        var pokemonSelfBox = document.getElementsByClassName('pokemon-container-self')[0]
+        var pokemonSelfName = document.getElementById('pokemonSelfName')
+        var pokemonSelfLevel = document.getElementById('pokemonSelfLevel')
+        var pokemonSelfHpBar = document.getElementById('pokemonSelfHPBar')
+        var pokemonSelfCurrentHp = document.getElementById('pokemonSelfCurrentPv')
+        var pokemonSelfMaxHp = document.getElementById('pokemonSelfMaxPv')
+        var pokemonSelfSprite = document.getElementById('pokemonSelfSprite')
+
+        //Interface
+        var monAudio = document.getElementById('myAudio')
+        var msgBox = document.getElementById('textBox')
+        var btnAtk = document.getElementsByClassName('btn-attacks')[0]
+        var atkContainer = document.getElementsByClassName('atk-container')[0]
+
+
+        msgBox.style.visibility = "visible"
+        msgBox.innerHTML = "Un " + otherPokemon.nom + " sauvage apparait !"
+
+
+        await waitingKeypress()
+        //monAudio.play()
+
+        pokemonOtherBox.style.visibility = "visible"
+        msgBox.style.visibility = "hidden"
+        pokemonOtherName.innerHTML = otherPokemon.nom
+        pokemonOtherLevel.innerHTML = otherPokemon.level
+        pokemonOtherHpBar.style.width = "100%"
+        pokemonOtherCurrentHp.innerHTML = otherPokemon.currentPv
+        pokemonOtherMaxHp.innerHTML = otherPokemon.maxPV
+        pokemonOtherSprite.src = otherPokemon.image
+        setTimeout(async function () {
+
+            msgBox.innerHTML = monPokemon.nom + " Gooo !"
+            msgBox.style.visibility = "visible"
+            await waitingKeypress()
+
+
+            pokemonSelfBox.style.visibility = "visible"
+            msgBox.style.visibility = "hidden"
+            pokemonSelfName.innerHTML = monPokemon.nom
+            pokemonSelfLevel.innerHTML = monPokemon.level
+            pokemonSelfHpBar.style.width = getPercent(monPokemon.currentPv, monPokemon.maxPV) + "%"
+            pokemonSelfCurrentHp.innerHTML = monPokemon.currentPv
+            pokemonSelfMaxHp.innerHTML = monPokemon.maxPV
+            pokemonSelfSprite.src = monPokemon.image
+
+            btnAtk.addEventListener('click', doAttaqueCycle)
+
+        }, 2000)
+
+        function doAttaqueCycle() {
+            btnAtk.removeEventListener('click', doAttaqueCycle)
+            btnAtk.style.visibility = "hidden"
+            let str = "<div class='row m-0 h-100'>"
+            let x
+            for (x in monPokemon.attaques) {
+                let attaque = monPokemon.attaques[x]
+                str += `
+                <div class=" btn-atk" id="atk${x}">
+                 <h3>${attaque.nom}</h3>
+                 <h5>${attaque.currentPP}/${attaque.maxPP}</h5>
+                 </div>
+                `
+            }
+            atkContainer.innerHTML = str
+
+            let y
+            for (y in monPokemon.attaques) {
+                document.getElementById('atk' + y).addEventListener('click', chooseAtk);
+            }
+        }
+
+        async function chooseAtk(event) {
+            let atkBtn = event.currentTarget
+            atkBtn.removeEventListener('click', chooseAtk)
+            atkContainer.innerHTML = ""
+            let atkId = parseInt(atkBtn.id.replace('atk', ''))
+            let atk = monPokemon.attaques[atkId]
+            if (atk.currentPP == 0) {
+                //on relance la boucle
+                restartLoop()
+                await message(monPokemon.nom + " ne dispose pas d'assez de PP pour effectuer " + atk.nom)
+            } else {
+                await doDamage(otherPokemon, monPokemon, atkId, false)
+                //Choix du random + attaque de l'autre pokemon
+                if (otherPokemon.currentPv == 0) {
+                    setTimeout(() => {
+                        alert("C'est gagné! We Did it ! Houra !")
+                        window.location.href = window.location
+                    }, 1000)
+
+                } else {
+                    let otherPkmnAtks = otherPokemon.attaques;
+                    let otherAtkid = getRandomInt(otherPkmnAtks.length)
+                    let otherAtk = otherPkmnAtks[otherAtkid]
+                    if (otherAtkid.currentPP == 0) {
+                        await message(otherPokemon.nom + " n'as plus assez de PP pour effectuer " + otherAtk.nom)
+                    } else {
+                        await doDamage(monPokemon, otherPokemon, otherAtkid, true)
+                        if (monPokemon.currentPv == 0) {
+                            alert("LOOOOOOOSER !!!!!")
+                            cheat()
+                            window.location.href = window.location
+
+                        }
+                    }
+
+                    restartLoop()
+                }
+
+            }
+        }
+
+        function restartLoop() {
+
+            btnAtk.style.visibility = "visible"
+            btnAtk.addEventListener('click', doAttaqueCycle)
+        }
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        async function doDamage(target, sender, atkId, isSelf) {
+            let atk = sender.attaques[atkId]
+            await message(sender.nom + " utilise " + atk.nom)
+            if (isSelf) {
+                pokemonOtherSprite.animate([
+                    // keyframes
+                    {left: '0px'},
+                    {left: '-250px'},
+                    {left: '0px'}
+                ], {
+                    // timing options
+                    duration: 500,
+                    iterations: 1
+                })
+                let count = 0;
+                let blink = setInterval(function () {
+                    if (pokemonSelfSprite.style.visibility == "hidden") {
+                        pokemonSelfSprite.style.visibility = "visible"
+                    }else{
+                        pokemonSelfSprite.style.visibility = "hidden"
+                    }
+                    if (count++ === 10) {
+                        pokemonSelfSprite.style.visibility = "visible"
+                        clearInterval(blink);
+                    }
+                }, 75)
+            } else {
+                pokemonSelfSprite.animate([
+                    // keyframes
+                    {left: '0px'},
+                    {left: '250px'},
+                    {left: '0px'}
+                ], {
+                    // timing options
+                    duration: 500,
+                    iterations: 1
+                })
+                let count = 0;
+                let blink = setInterval(function () {
+                    if (pokemonOtherSprite.style.visibility == "hidden") {
+                        pokemonOtherSprite.style.visibility = "visible"
+                    }else{
+                        pokemonOtherSprite.style.visibility = "hidden"
+                    }
+                    if (count++ === 10) {
+                        pokemonOtherSprite.style.visibility = "visible"
+                        clearInterval(blink);
+                    }
+                }, 75)
+
+
+            }
+            let removePv = target.currentPv - atk.power
+            if (removePv <= 0) {
+                removePv = 0
+            }
+            target.currentPv = removePv
+            atk.currentPP = atk.currentPP - 1
+            let bar, currentHp
+            if (isSelf) {
+                bar = pokemonSelfHpBar
+                currentHp = pokemonSelfCurrentHp
+                saveJson()
+            } else {
+                bar = pokemonOtherHpBar
+                currentHp = pokemonOtherCurrentHp
+            }
+            bar.style.width = getPercent(target.currentPv, target.maxPV) + "%"
+            currentHp.innerHTML = target.currentPv
+        }
+
+        function saveJson() {
+            localStorage.setItem('pokemon', JSON.stringify(monPokemon))
+        }
+
+        async function message(message) {
+            msgBox.innerHTML = message
+            msgBox.style.visibility = "visible"
+            await waitingKeypress()
+            msgBox.style.visibility = "hidden"
+        }
+
+        function getPercent(min, max) {
+            return parseInt(min) / parseInt(max) * 100
+        }
+
+
+        function waitingKeypress() {
+            return new Promise((resolve) => {
+                document.addEventListener('keydown', onKeyHandler);
+
+                function onKeyHandler(e) {
+                    resolve();
+                }
+            });
+        }
+
+        function cheat() {
+            monPokemon.currentPv = monPokemon.maxPV
+            let x
+            for (x in monPokemon.attaques) {
+                monPokemon.attaques[x].currentPP = monPokemon.attaques[x].maxPP
+            }
+            saveJson()
+            pokemonSelfHpBar.style.width = getPercent(monPokemon.currentPv, monPokemon.maxPV) + "%"
+            pokemonSelfCurrentHp.innerHTML = monPokemon.currentPv
+
+        }
+    })
+
+</script>
 </body>
 </html>

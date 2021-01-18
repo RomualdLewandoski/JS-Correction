@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+
+<input type="button" id="clickMe" value="Clic sur moi">
+
+
+<form action="http://google.com" id="myForm">
+    <input type="text">
+    <input type="submit">
+</form>
+
+
+<input type="password" id="myLogin">
+
+
+<script>
+    $(document).ready(function () {
+        console.log("Document chargé");
+        $('#clickMe').click(function () {
+            console.log("clic me clik");
+        })
+
+        $('#myForm').submit(function (event) {
+            event.preventDefault()
+            console.log("Tu n'as pas le droit de faire ça");
+        })
+
+        $('#myLogin').focus(function () {
+            var str = ""
+            $('#myLogin').keydown(function (event) {
+                if (event.keyCode != 16 || event.keyCode == 13 ){
+                    str += event.key
+                    console.log(str);
+                }
+            })
+        })
+
+    })
+
+</script>
+
+</body>
+</html>

@@ -262,3 +262,12 @@ window.addEventListener('load', function () {
 //innerHTML / innerText
 //style => width, z-index, display, visibility (attributs css)
 
+var princeName = "Victor"
+var monTexte = "Il était une fois un prince appelé "+princeName+" qui chantais" +
+    " \"Hello hello on rentre " +
+    "du" +
+    " boulot\""
+var montexteV2 = `Il était une fois un
+ prince ${princeName} qui chantais 
+ "Hello hello on rentre du 
+ boulot"`

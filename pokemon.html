@@ -23,7 +23,7 @@
                      aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <div class="text-center">
-                <h3><span id="pokemonOtherCurrentHp">Vie</span>/<span id="pokemonOtherMaxHp">Max</span></h3>
+                <h3><span id="pokemonOtherCurrentHp"></span>/<span id="pokemonOtherMaxHp"></span></h3>
             </div>
         </div>
         <div class="pokemon-image-container-other ">
@@ -72,12 +72,6 @@
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
@@ -115,6 +109,7 @@
         status: "none",
         image: "https://www.pokepedia.fr/images/thumb/6/68/Laggron-RS.png/250px-Laggron-RS.png"
     }
+
     var otherPokemon = {
         nom: "Groudon",
         level: 60,
@@ -228,6 +223,7 @@
                  </div>
                 `
             }
+            str += '</div>'
             atkContainer.innerHTML = str
 
             let y
@@ -377,6 +373,7 @@
         function waitingKeypress() {
             return new Promise((resolve) => {
                 document.addEventListener('keydown', onKeyHandler);
+                //document.addEventListener('click', onKeyHandler);
 
                 function onKeyHandler(e) {
                     resolve();

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+<div class="container">
+    <table class="table" id="myTable">
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <form action="http://google.com" class="mb-2" id="myForm">
+        <input type="text" class="form-control mb-2" id="myInput">
+        <button type="submit" class="  btn btn-success">Ajouter</button>
+    </form>
+
+    <button class="btn btn-warning" id="removeFirst">Supprimer la 1ere ligne</button>
+    <button class="btn btn-danger" id="removeLast">Supprimer la dernière ligne</button>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var monObjGlobal
+        if (!localStorage.getItem('monTablo')){
+            monObjGlobal = {
+                "tableaux": []
+            }
+        }else{
+            monObjGlobal = JSON.parse(localStorage.getItem('monTablo'))
+            //affichage des infos précédentes enregistrée dans le localstorage
+            let x
+            for (x in monObjGlobal.tableaux){
+                let maLigne = monObjGlobal.tableaux[x]
+
+                $('#myTable').children('tbody').append(`
+            <tr>
+                <td>${maLigne.col1}</td>
+                <td>${maLigne.col2}</td>
+                <td><button class="btn btn-sm btn-danger deleteMe">Supprimer</button></td>
+            </tr>
+            `)
+
+            }
+        }
+
+        $('#myForm').submit(function (event) {
+            event.preventDefault()
+            if ($('#myInput').val() != "") {
+                var tableauCount
+                if (monObjGlobal.tableaux.length == 0){
+                    tableauCount = 1
+                }else{
+                    tableauCount = monObjGlobal.tableaux[monObjGlobal.tableaux.length -1].col1 + 1
+                }
+                $('#myTable').children('tbody').append(`
+            <tr>
+                <td>${tableauCount}</td>
+                <td>${$('#myInput').val()}</td>
+                <td><button class="btn btn-sm btn-danger deleteMe">Supprimer</button></td>
+            </tr>
+            `)
+
+                var obj = {
+                    col1: tableauCount,
+                    col2: $('#myInput').val()
+                }
+
+                monObjGlobal.tableaux.push(obj)
+                localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
+                $('#myInput').val("")
+                $('.deleteMe').unbind('click', deleteLigne)
+                $('.deleteMe').click(deleteLigne)
+
+            }
+        })
+
+        $('#removeFirst').click(function () {
+            monObjGlobal.tableaux.splice(0, 1)
+            localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
+            $('#myTable').children('tbody').children().first().remove()
+        })
+
+        $('#removeLast').click(function () {
+            monObjGlobal.tableaux.splice(monObjGlobal.tableaux.length-1, 1)
+            localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
+            $('#myTable').children('tbody').children().last().remove()
+        })
+
+
+        $('.deleteMe').click(deleteLigne)
+
+        function deleteLigne(event){
+            var monButton = $(this)
+            var maLigne = monButton.parent().parent()
+            var maColone1 = maLigne.children().first()
+
+            let x
+            for (x in monObjGlobal.tableaux){
+                let currentTableauxLigne = monObjGlobal.tableaux[x]
+
+                if (currentTableauxLigne.col1 == maColone1.text()){
+                    monObjGlobal.tableaux.splice(x, 1)
+                    localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
+
+                }
+            }
+
+
+            maLigne.remove()
+        }
+    })
+
+
+
+</script>
+
+
+</body>
+</html>

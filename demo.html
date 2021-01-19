@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<div id="div1" style="height: 250px; background-color: #1e7e34">
+    <button id="show2">Affiche la div2</button>
+    <button id="show2Fade">Affiche la div2 avec fade</button>
+</div>
+
+<div id="div2" style="height: 250px; background-color: gold; display: none">
+    <button id="show1">Affiche la div1</button>
+    <button id="show1Fade">Affiche la div1 avec fade</button>
+
+</div>
+<button id="toogle1">Toggle 1</button>
+
+<button id="toogle2">Toggle 2</button>
+
+
+
+<p id="toto">Salut je suis toto l'ane trop rogolo</p>
+<hr>
+<div id="tutu">
+
+    <p>Coucou par defaut</p>
+</div>
+<hr>
+
+<input type="text" id="monInput">
+
+
+<ul id="ulTest">
+    <li id="test1">Val1
+        <ul>
+                <li>sub1</li>
+                <li>sub2</li>
+                <li>sub3</li>
+        </ul>
+    </li>
+    <li class="test2">Val2</li>
+    <li class="test2">Val3</li>
+    <li>ValEntin</li>
+    <li>Valala</li>
+</ul>
+
+
+<script>
+    $(document).ready(() => {
+
+      /*$('#ulTest').children().click(function () {
+        console.log("clicked on " + $(this).text())
+      })*/
+
+       /* $('#ulTest').children().each(function (index) {
+            console.log("Je parcours actuellement l'enfant " + index)
+            $(this).click(() => {
+                console.log("clic sur " + $(this).text())
+            })
+        })*/
+
+        $('.test2').click(() => {
+            console.log('test')
+        })
+
+        $('#monInput').click(() => {
+            console.log($('#monInput').val());
+        })
+        $('#monInput').dblclick(() => {
+            $('#monInput').val("Double clic")
+        })
+
+        console.log($('#div1').css("height"))
+        $('#div1').css("height", '500px')
+        $('#div1').css("width", '50%')
+
+        $('#tutu').append("<ul><li>Salut</li></ul>")
+        $('#tutu').prepend("<h1>Plop</h1>")
+        $('#tutu').before("<h4>Ceci est avant tutu</h4>")
+        $('#tutu').after("<h3>Ceci est APRES tutu</h3>")
+
+        console.log($('#toto').text())
+        $('#toto').text("<h1>Trop trop rogolo</h1>")
+        console.log($('#toto').text())
+
+
+
+        $('#show2').click(() => {
+            $('#div1').hide()
+            $('#div2').show()
+        })
+        $('#show1').click(() => {
+            $('#div2').hide()
+            $('#div1').show()
+        })
+        $('#show2Fade').click(() => {
+            $('#div1').fadeOut(250)
+            $('#div2').fadeIn(2000)
+        })
+
+        $('#show1Fade').click(() => {
+            $('#div2').fadeOut(250)
+            $('#div1').fadeIn(2000)
+        })
+
+        $('#toogle1').click(() => {
+            $('#div1').toggle()
+        })
+
+        $('#toogle2').click(() => {
+            $('#div2').toggle()
+        })
+    })
+</script>
+
+</body>
+</html>

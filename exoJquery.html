@@ -42,6 +42,7 @@
             //affichage des infos précédentes enregistrée dans le localstorage
             let x
             for (x in monObjGlobal.tableaux){
+
                 let maLigne = monObjGlobal.tableaux[x]
 
                 $('#myTable').children('tbody').append(`
@@ -59,9 +60,15 @@
             event.preventDefault()
             if ($('#myInput').val() != "") {
                 var tableauCount
+                // []
                 if (monObjGlobal.tableaux.length == 0){
                     tableauCount = 1
                 }else{
+                    //[
+                    // {"col1": 10, "col2":"coucou"}, Taille 1 Index 0
+                    // {"col1": 12, "col2":"coucou"}, Taille 2 Index 1
+                    // {"col1": 13, "col2":"coucou"}, Taille 3 Index 2
+                    // ]
                     tableauCount = monObjGlobal.tableaux[monObjGlobal.tableaux.length -1].col1 + 1
                 }
                 $('#myTable').children('tbody').append(`
@@ -76,9 +83,17 @@
                     col1: tableauCount,
                     col2: $('#myInput').val()
                 }
+                //obj = {"col1": 14, "col2":"coucou"}
 
                 monObjGlobal.tableaux.push(obj)
+                //[
+                // {"col1": 10, "col2":"coucou"}, Taille 1 Index 0
+                // {"col1": 12, "col2":"coucou"}, Taille 2 Index 1
+                // {"col1": 13, "col2":"coucou"}, Taille 3 Index 2
+                // {"col1": 14, "col2":"coucou"},
+                // ]
                 localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
+
                 $('#myInput').val("")
                 $('.deleteMe').unbind('click', deleteLigne)
                 $('.deleteMe').click(deleteLigne)
@@ -88,11 +103,21 @@
 
         $('#removeFirst').click(function () {
             monObjGlobal.tableaux.splice(0, 1)
+            //[
+            // {"col1": 12, "col2":"coucou"}, Taille 2 Index 1
+            // {"col1": 13, "col2":"coucou"}, Taille 3 Index 2
+            // {"col1": 14, "col2":"coucou"},
+            // ]
             localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
             $('#myTable').children('tbody').children().first().remove()
         })
 
         $('#removeLast').click(function () {
+            //[
+            // {"col1": 10, "col2":"coucou"}, Taille 1 Index 0
+            // {"col1": 12, "col2":"coucou"}, Taille 2 Index 1
+            // {"col1": 13, "col2":"coucou"}, Taille 3 Index 2
+            // ]
             monObjGlobal.tableaux.splice(monObjGlobal.tableaux.length-1, 1)
             localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
             $('#myTable').children('tbody').children().last().remove()
@@ -107,16 +132,23 @@
             var maColone1 = maLigne.children().first()
 
             let x
+            //[
+            // {"col1": 10, "col2":"coucou"}, Taille 1 Index 0 X = 0
+            // {"col1": 12, "col2":"coucou"}, Taille 2 Index 1 X = 1
+            // {"col1": 13, "col2":"coucou"}, Taille 3 Index 2 X = 2
+            // {"col1": 14, "col2":"coucou"}, Taille 4 Index 3 X = 3
+            // ]
+            //maColone1.text() = 12
             for (x in monObjGlobal.tableaux){
                 let currentTableauxLigne = monObjGlobal.tableaux[x]
-
+                //col1 = 10 => x = 0
+                //col1 = 12 => x = 1
                 if (currentTableauxLigne.col1 == maColone1.text()){
                     monObjGlobal.tableaux.splice(x, 1)
                     localStorage.setItem('monTablo', JSON.stringify(monObjGlobal))
 
                 }
             }
-
 
             maLigne.remove()
         }

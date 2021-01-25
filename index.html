@@ -21,7 +21,61 @@
 <input type="text" name="txtChoix" id="txtk" value="" size="20" maxlength="10"/>
 
 <script>
-    function testerBouton(){
+
+    function testerBouton() {
+        //ETAPE 1 : récupération des différents éléments du dom qui serront utilisé
+        var radio = document.getElementsByName('btnRadChoix')
+        var textI = document.getElementById('txti')
+        var textJ = document.getElementById('txtj')
+        var textK = document.getElementById('txtk')
+
+        //ETAPE 2 : Parcourir les boutons radio pour trouver lequel est selectioné
+
+        // plusieurs méthodes pour rappel le getElementsByName retourne un tableau
+
+        // méthode 1  :
+        for (var i = 0; i < radio.length; i++){
+            let btnRadioActuel = radio[i]
+            if (btnRadioActuel.checked){
+                textI.value = btnRadioActuel.value
+            }
+        }
+
+        // méthode 2 :
+        let j = 0
+        while (j < radio.length){
+            let btnRadioActuel = radio[j]
+            if (btnRadioActuel.checked){
+                textJ.value = btnRadioActuel.value
+            }
+            j++
+        }
+
+        // méthode 3 :
+        let k
+        for (k in radio){
+            let btnRadioActuel = radio[k]
+            if (btnRadioActuel.checked){
+                textK.value = btnRadioActuel.value
+            }
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*function testerBouton() {
         var boutonRadio = document.getElementsByName("btnRadChoix")
         var inputTextI = document.getElementById('txti')
         var inputTextJ = document.getElementById('txtj')
@@ -47,26 +101,26 @@
          * ["nom"] donne "Toto"
          *
          */
-        for (var i = 0; i < boutonRadio.length; i++){
+        /*for (var i = 0; i < boutonRadio.length; i++) {
             let vraiBouton = boutonRadio[i]
-            if (vraiBouton.checked){
+            if (vraiBouton.checked) {
                 inputTextI.value = vraiBouton.value;
             }
         }
 
         var j = 0;
-        while (j < boutonRadio.length){
+        while (j < boutonRadio.length) {
             let vraiBouton = boutonRadio[j]
-            if (vraiBouton.checked){
+            if (vraiBouton.checked) {
                 inputTextJ.value = vraiBouton.value;
             }
             j++;
         }
 
         let k;
-        for (k in boutonRadio){
+        for (k in boutonRadio) {
             let vraiBouton = boutonRadio[k]
-            if (vraiBouton.checked){
+            if (vraiBouton.checked) {
                 inputTextK.value = vraiBouton.value;
             }
         }
@@ -74,7 +128,7 @@
         //Pour i avec comme valeur par defaut 0, temps que i est plus petit que la taille de mon tableau
         // je fait mon traitement PUIS j'incrémente i de 1
 
-    }
+    }*/
 </script>
 
 </body>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+
+    <style>
+        body{
+            background-color: rgba(205, 0, 0, 1);
+        }
+        .navbar-light{
+            background-color: rgba(255, 217, 0, 1);
+
+        }
+    </style>
+
+</head>
+<body class="">
+
+<nav class="navbar navbar-expand-lg navbar-light ">
+    <a class="navbar-brand" href="#">Social - NietWork <i class="fas fa-wine-bottle"></i></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto" id="navMenu">
+            <li class="nav-item active">
+                <a class="nav-link" href="#" id="loginMenu">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="registerMenu">Register</a>
+            </li>
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0" style="display: none">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+
+<div id="app" class="">
+
+    <div id="loginDiv" class="mt-5 text-center">
+        <div class="card offset-3 col-6">
+            <div class="card-body text-left">
+                <form action="" id="loginForm">
+                    <div class="text-center h2">Décline ton identitée camarde</div>
+                    <div class="form-group">
+                        <label for="loginEmail">Quel est ton nom Camarade ?</label>
+                        <input type="text" class="form-control" id="loginPseudo" placeholder="Jostof">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">La phrase secrete du KGB ? </label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="">
+                    </div>
+
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning">nazdarovya !</button>
+                        <button type="button" class="btn btn-danger" id="toGoulag">To Goulag</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="registerDiv" class="mt-5 text-center" style="display: none">
+        <div class="card offset-3 col-6">
+            <div class="card-body text-left">
+                <form action="" id="registerForm">
+                    <div class="text-center h2">Rejoint les rangs camarde</div>
+
+                    <div class="form-group">
+                        <label for="loginEmail">Quel est ton nom Camarade ?</label>
+                        <input type="text" class="form-control" id="registerPseudo" placeholder="Jostof">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">La phrase secrete du KGB ? </label>
+                        <input type="password" class="form-control" id="registerPassword" placeholder="">
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning">nazdarovya !</button>
+                        <button type="button" class="btn btn-danger" id="toLogin">Ich bin eine Osten Berliner!</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
+        integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf"
+        crossorigin="anonymous"></script>
+
+
+<script>
+    $(document).ready(() => {
+
+        var usersObj
+        if (!localStorage.getItem('accounts')){
+            usersObj = {
+                "users" : []
+            }
+        }else{
+            usersObj = JSON.parse(localStorage.getItem('accounts'))
+        }
+
+
+
+        $('#toGoulag').click(displayRegister)
+        $('#toLogin').click(displayLogin)
+        $('#loginMenu').click((event) => {
+            event.preventDefault()
+            displayLogin()
+        })
+        $('#registerMenu').click((event) => {
+            event.preventDefault()
+            displayRegister()
+        })
+
+
+        $('#registerForm').submit(register)
+
+        $('#loginForm').submit(login)
+
+
+        function register(event) {
+            event.preventDefault()
+            //Etape a : Récupération des champs
+            var pseudo = $('#registerPseudo').val()
+            var mdp = $('#registerPassword').val()
+            //Etape b :  Verifications
+            //Verification des champs vides
+            if (mdp == "" || pseudo == ""){
+                alert("Tu dois remplir les champs blyat")
+            }else{
+                //Verification numéro 2
+                // le pseudo ou l'email ou les 2 si besoin existent ils déja dans notre [] d'utlisateurs ?
+                let pseudoExist = false
+                let x
+                for (x in usersObj.users){
+                    let actualUser = usersObj.users[x]
+                    if (actualUser.pseudo == pseudo){
+                        pseudoExist = true
+                        break;
+                    }
+                }
+                if (pseudoExist){
+                    alert("Un Camarde porte déja ce nom")
+                }else{
+                    //Etape c : création de l'objet utlisateur :
+                    var user = {
+                        pseudo: pseudo,
+                        mdp: mdp
+                    }
+                    //Etape d : Ajout du nouvel utilisateur dans la liste des utilisateurs
+                    usersObj.users.push(user);
+                    //Etape e : Sauvegarde dans le localStorage
+                    saveUsers()
+
+                    //ETAPES FACULTATIVES :
+                    //On va vider les champs :
+                    $('#registerPseudo').val("")
+                    $('#registerPassword').val("")
+                    //on va afficher le panneau de login
+                    displayLogin()
+                }
+            }
+        }
+
+        function login(event) {
+            event.preventDefault()
+            //Etape a : Récupération des champs
+            var pseudo = $('#loginPseudo').val()
+            var password = $('#loginPassword').val()
+            //Etape b : VERIFICATIONS  :
+
+            // les champs sont ils tous remplis ?
+            if(password == "" || pseudo == ""){
+                alert("Tu es un agent américain")
+            }else{
+                // le pseudo existe il ? et si oui le mdp correspond il ?
+                let isConnected = false
+                let x
+                for (x in usersObj.users){
+                    var actualUser = usersObj.users[x]
+                    if (actualUser.pseudo == pseudo){
+                        if (actualUser.mdp == password){
+                            isConnected = true
+                            break;
+                        }
+                    }
+                }
+                if(isConnected){
+                    alert("Bienvenue Camarade ! ")
+                }else{
+                    alert("Tu es un agent américain")
+                }
+
+            }
+        }
+
+        function saveUsers() {
+            localStorage.setItem('accounts', JSON.stringify(usersObj))
+        }
+
+        function displayRegister() {
+            $('#registerDiv').show()
+            $('#loginDiv').hide()
+            $('#registerMenu').parent().addClass("active")
+            $('#loginMenu').parent().removeClass("active")
+        }
+
+        function displayLogin() {
+            $('#loginDiv').show()
+            $('#registerDiv').hide()
+            $('#loginMenu').parent().addClass("active")
+            $('#registerMenu').parent().removeClass("active")
+        }
+    })
+</script>
+</body>
+</html>

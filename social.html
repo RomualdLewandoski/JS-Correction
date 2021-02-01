@@ -13,10 +13,11 @@
 
 
     <style>
-        body{
+        body {
             background-color: rgba(205, 0, 0, 1);
         }
-        .navbar-light{
+
+        .navbar-light {
             background-color: rgba(255, 217, 0, 1);
 
         }
@@ -52,13 +53,13 @@
 
 <div id="app" class="">
 
-    <div id="loginDiv" class="mt-5 text-center">
+    <div id="loginDiv" class="mt-5 text-center" style="display: none">
         <div class="card offset-3 col-6">
             <div class="card-body text-left">
                 <form action="" id="loginForm">
                     <div class="text-center h2">Décline ton identitée camarde</div>
                     <div class="form-group">
-                        <label for="loginEmail">Quel est ton nom Camarade ?</label>
+                        <label for="loginPseudo">Quel est ton nom Camarade ?</label>
                         <input type="text" class="form-control" id="loginPseudo" placeholder="Jostof">
                     </div>
                     <div class="form-group">
@@ -83,7 +84,7 @@
                     <div class="text-center h2">Rejoint les rangs camarde</div>
 
                     <div class="form-group">
-                        <label for="loginEmail">Quel est ton nom Camarade ?</label>
+                        <label for="registerPseudo">Quel est ton nom Camarade ?</label>
                         <input type="text" class="form-control" id="registerPseudo" placeholder="Jostof">
                     </div>
                     <div class="form-group">
@@ -102,6 +103,47 @@
 
     </div>
 
+    <div id="wallDiv" class="mt-5 text-center" style="display: none">
+        <div class="container-fluid row">
+            <div class="col-md-3">
+                Col1
+            </div>
+            <div class="col-md-6">
+
+                <div class="card">
+                    <div class="card-body text-left">
+                        <form id="createPost">
+                            <div class="form-group">
+                                <label for="postContent">A quoi pense tu ? </label>
+                                <textarea name="" id="postContent" cols="30" rows="5" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="postImage">Une image?</label>
+                                <input type="text" id="postImage" class="form-control">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-warning">Ajouter au mur</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="wallContainer" class="text-left">
+
+                    <!-- DEBUT D'UN POST -->
+
+                    <!--FIN D'UN POST-->
+
+                </div>
+
+
+            </div>
+            <div class="col-md-3">
+                Col3
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -113,15 +155,57 @@
 <script>
     $(document).ready(() => {
 
+
         var usersObj
-        if (!localStorage.getItem('accounts')){
+        if (!localStorage.getItem('accounts')) {
             usersObj = {
-                "users" : []
+                "users": []
             }
-        }else{
+        } else {
             usersObj = JSON.parse(localStorage.getItem('accounts'))
         }
 
+        var postsObj
+        if (!localStorage.getItem("walls")) {
+            postsObj = {
+                "posts": []
+            }
+        } else {
+            postsObj = JSON.parse(localStorage.getItem("walls"))
+        }
+
+        var postTemplate = ` <div class="card mt-5">
+                        <div class="card-body">
+                            <span class="h2">%auteur%</span><small>Le %date%</small>
+                            <hr>
+                            <p>%contenu%</p>
+                            %image%
+                        </div>
+                        <div class="card-footer">
+                            <div class="row" data-id="%id%">
+                                <div class="col-md-3">
+                                    <button class="btn btn-success liker">%nbLike% Liker</button>
+                                </div>
+                                <div class=" offset-md-5 col-md-3">
+                                    <button class="btn btn-danger commenter">%nbCom% Commenter</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+
+        var formTemplate = `
+                                 <form id="comForm" class="mt-3">
+                                    <input type="text" class="form-control" id="commentaireInput" placeholder="Votre commentaire">
+                                    <button type="submit" class="btn btn-outline-danger">Envoyer</button>
+                                </form>`
+
+
+        if (!sessionStorage.getItem("session")) {
+            $('#loginDiv').show()
+        } else {
+            $('#wallDiv').show()
+            generateWall()
+        }
 
 
         $('#toGoulag').click(displayRegister)
@@ -140,6 +224,8 @@
 
         $('#loginForm').submit(login)
 
+        $('#createPost').submit(makePost)
+
 
         function register(event) {
             event.preventDefault()
@@ -148,25 +234,26 @@
             var mdp = $('#registerPassword').val()
             //Etape b :  Verifications
             //Verification des champs vides
-            if (mdp == "" || pseudo == ""){
+            if (mdp == "" || pseudo == "") {
                 alert("Tu dois remplir les champs blyat")
-            }else{
+            } else {
                 //Verification numéro 2
                 // le pseudo ou l'email ou les 2 si besoin existent ils déja dans notre [] d'utlisateurs ?
                 let pseudoExist = false
                 let x
-                for (x in usersObj.users){
+                for (x in usersObj.users) {
                     let actualUser = usersObj.users[x]
-                    if (actualUser.pseudo == pseudo){
+                    if (actualUser.pseudo == pseudo) {
                         pseudoExist = true
                         break;
                     }
                 }
-                if (pseudoExist){
+                if (pseudoExist) {
                     alert("Un Camarde porte déja ce nom")
-                }else{
+                } else {
                     //Etape c : création de l'objet utlisateur :
                     var user = {
+                        id: uuidv4(),
                         pseudo: pseudo,
                         mdp: mdp
                     }
@@ -193,24 +280,31 @@
             //Etape b : VERIFICATIONS  :
 
             // les champs sont ils tous remplis ?
-            if(password == "" || pseudo == ""){
+            if (password == "" || pseudo == "") {
                 alert("Tu es un agent américain")
-            }else{
+            } else {
                 // le pseudo existe il ? et si oui le mdp correspond il ?
                 let isConnected = false
                 let x
-                for (x in usersObj.users){
+                for (x in usersObj.users) {
                     var actualUser = usersObj.users[x]
-                    if (actualUser.pseudo == pseudo){
-                        if (actualUser.mdp == password){
+                    if (actualUser.pseudo == pseudo) {
+                        if (actualUser.mdp == password) {
                             isConnected = true
+                            sessionStorage.setItem("session", JSON.stringify(actualUser))
                             break;
                         }
                     }
                 }
-                if(isConnected){
+                if (isConnected) {
                     alert("Bienvenue Camarade ! ")
-                }else{
+
+                    $('#loginDiv').hide()
+                    $('#wallDiv').show()
+                    generateWall()
+
+
+                } else {
                     alert("Tu es un agent américain")
                 }
 
@@ -219,6 +313,10 @@
 
         function saveUsers() {
             localStorage.setItem('accounts', JSON.stringify(usersObj))
+        }
+
+        function savePost() {
+            localStorage.setItem('walls', JSON.stringify(postsObj))
         }
 
         function displayRegister() {
@@ -234,6 +332,210 @@
             $('#loginMenu').parent().addClass("active")
             $('#registerMenu').parent().removeClass("active")
         }
+
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function makePost(event) {
+            //etape 1 : bloquer l'event par defaut
+            event.preventDefault()
+            //etape 2 : verifier le formulaire
+            var postContent = $('#postContent').val()
+            var postImage = $('#postImage').val()
+            if (postContent == "") {
+                alert("Le contenu du post ne peut etre vide")
+            } else {
+                //on va continuer a ajouter notre post
+                //Etape 3 : Création du post :
+                //Le post doit contenir :
+
+                //Auteur :
+                //Contenu:
+                //Image : ""
+                //likes : []
+                //commentaires: []
+                //date :
+                //id:
+
+                var newPost = {
+                    id: "post_" + uuidv4(),
+                    auteur: JSON.parse(sessionStorage.getItem("session")).id,
+                    contenu: postContent,
+                    image: postImage,
+                    likes: [],
+                    coms: [],
+                    date: (new Date()).getTime()
+                }
+
+                postsObj.posts.push(newPost)
+                savePost()
+                $('#postContent').val("")
+                $('#postImage').val("")
+
+                generatePost(newPost)
+
+
+            }
+        }
+
+        function generatePost(newPost, isAppend = false) {
+            var texte = postTemplate
+            var postDate = new Date(newPost.date)
+            //on va construire notre chaine de caractère pour la date :
+            var dateStr = "" + ajouteUnZero(postDate.getDate()) + "/"
+                + ajouteUnZero(postDate.getMonth() + 1) + "/"
+                + postDate.getFullYear() + " à " +
+                ajouteUnZero(postDate.getHours()) + ":" + ajouteUnZero(postDate.getMinutes())
+
+            texte = texte.replace(/%id%/g, newPost.id)
+            texte = texte.replace(/%auteur%/g, getUserById(newPost.auteur).pseudo)
+            texte = texte.replace(/%contenu%/g, newPost.contenu)
+            texte = texte.replace(/%date%/g, dateStr)
+            texte = texte.replace(/%nbLike%/g, newPost.likes.length)
+            texte = texte.replace(/%nbCom%/g, newPost.coms.length)
+            if (newPost.image != "") {
+                texte = texte.replace(/%image%/g, "<img src='" + newPost.image + "' style='max-width: 100%'>")
+            } else {
+                texte = texte.replace(/%image%/g, "")
+            }
+
+            if (isAppend) {
+                $('#wallContainer').append(texte)
+            } else {
+                $('#wallContainer').prepend(texte)
+            }
+            $('.liker').unbind('click', liker)
+            $('.liker').click(liker)
+            $('.commenter').unbind('click', showComForm)
+            $('.commenter').click(showComForm)
+
+        }
+
+        function generateWall(userId = JSON.parse(sessionStorage.getItem('session')).id) {
+            let x
+            for (x in postsObj.posts) {
+                var currentPost = postsObj.posts[x]
+                if (currentPost.auteur == userId) {
+                    //ça veux dire que l'auteur du post c'est l'utilisateur que l'on cible
+                    generatePost(currentPost)
+                }
+            }
+        }
+
+        function ajouteUnZero(number) {
+            if (number < 10) {
+                number = "0" + number
+            }
+            return number
+        }
+
+        function getUserById(id) {
+            let x
+            for (x in usersObj.users) {
+                var currentUser = usersObj.users[x]
+                if (currentUser.id == id) {
+                    return currentUser
+                }
+            }
+            return {
+                pseudo: "User not found"
+            }
+        }
+
+        function showComForm() {
+            var btnCom = $(this)
+            var btnContainer = btnCom.parent().parent()
+            if ($('#comForm').length == 1) {
+                $('#comForm').unbind('submit', commenter)
+                $('#comForm').remove()
+            }
+            btnContainer.after(formTemplate)
+            $('#comForm').submit(commenter)
+
+            //gestion d'event
+
+        }
+
+        function commenter(event) {
+            event.preventDefault()
+            var commentaireContenu = $('#commentaireInput').val()
+            if (commentaireContenu == "") {
+                alert("Il manque des champs kurva")
+            } else {
+                //on va ajouter le commentaire
+                //etape 1 identifier le post
+                var idPost = $(this).parent().children().first().attr("data-id")
+                //etape 2 on construit notre objet commentaire :
+                // auteur
+                // contenu
+                // id
+                // date
+                var commentaire = {
+                    id: "com_" + uuidv4(),
+                    auteur: JSON.parse(sessionStorage.getItem("session")).id,
+                    contenu: commentaireContenu,
+                    date: (new Date()).getTime()
+                }
+                let x
+                for(x in postsObj.posts){
+                    let actualPost = postsObj.posts[x]
+                    if(actualPost.id == idPost){
+                        actualPost.coms.push(commentaire)
+                        savePost()
+                    }
+                }
+            }
+
+        }
+
+        function liker() {
+            var btnLike = $(this)
+            var targetId = btnLike.parent().parent().attr("data-id")
+            //on cherche le post
+            let x
+            for (x in postsObj.posts) {
+                let actualPost = postsObj.posts[x]
+                if (actualPost.id == targetId) {
+                    //ici on va rechercher dans le tableau like SI notre utilisateur a déja liker
+                    let y
+                    var isLiked = false;
+                    for (y in actualPost.likes) {
+                        let actualLike = actualPost.likes[y]
+                        if (actualLike == JSON.parse(sessionStorage.getItem('session')).id) {
+                            isLiked = true
+                            actualPost.likes.splice(y, 1)
+                            break;
+                        }
+                    }
+                    if (!isLiked) {
+                        actualPost.likes.push(JSON.parse(sessionStorage.getItem('session')).id)
+                    }
+                    btnLike.text(actualPost.likes.length + " Liker")
+                    savePost()
+                }
+            }
+        }
+
+        //LOCALSTORAGE :
+        //ENTREE EN STRING => stringify
+        //SORTIE TJR EN STRING <= parse
+
+        //DANS UN TABLEAU
+        // pour AJOUTER a un tableau on dit POUSSER donc push()
+        // pour retirer on splice (index , nombre a splicer)
+
+        //EVENTS JQUERY
+        // unbind("event", function) => PERMET DE RETIRER UN EVENT
+
+        // remplacement :
+        // string.replace(regex, valeur a mettre a la place)
+        // pour la regex en dur : on va utiliser / suivit de la valeur puis a nouveau /
+        // pour ciler TOUS LES ELEMENTS IDENTIQUES de cette string on va rajouter g apres le dernier /
+
     })
 </script>
 </body>

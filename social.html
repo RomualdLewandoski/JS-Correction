@@ -21,6 +21,11 @@
             background-color: rgba(255, 217, 0, 1);
 
         }
+
+        .com-container {
+            max-height: 250px;
+            overflow-y: auto;
+        }
     </style>
 
 </head>
@@ -106,11 +111,13 @@
     <div id="wallDiv" class="mt-5 text-center" style="display: none">
         <div class="container-fluid row">
             <div class="col-md-3">
-                Col1
+                <a href="" class="text-warning" id="toTheMur">Profil</a>
+                <br>
+                <a href="" class="text-warning" id="exitUSSR">Déconnexion</a>
             </div>
             <div class="col-md-6">
 
-                <div class="card">
+                <div class="card" id="formContainer" style="display: none">
                     <div class="card-body text-left">
                         <form id="createPost">
                             <div class="form-group">
@@ -138,8 +145,25 @@
 
 
             </div>
-            <div class="col-md-3">
-                Col3
+            <div class="col-md-3" id="userList">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modalLike" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+         aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Liste des likes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="likeContainer">
+                </div>
             </div>
         </div>
     </div>
@@ -155,6 +179,9 @@
 <script>
     $(document).ready(() => {
 
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
 
         var usersObj
         if (!localStorage.getItem('accounts')) {
@@ -186,10 +213,15 @@
                                 <div class="col-md-3">
                                     <button class="btn btn-success liker">%nbLike% Liker</button>
                                 </div>
-                                <div class=" offset-md-5 col-md-3">
-                                    <button class="btn btn-danger commenter">%nbCom% Commenter</button>
+                                <div class="col-md-5">
+                                    <a href="" class="afficheLike h4" data-toggle="tooltip" data-placement="top" title="Afficher les likes"> <i class="fad fa-thumbs-up"></i> </a>
+                                    <a href="" class="afficheCom h4 float-right" data-toggle="tooltip" data-placement="top" title="Afficher les commentaires"> <i class="fad fa-comments"></i> </a>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <button class="btn btn-danger float-right commenter">%nbCom% Commenter</button>
                                 </div>
                             </div>
+                            <div class="com-container"></div>
                         </div>
                     </div>`
 
@@ -199,6 +231,15 @@
                                     <button type="submit" class="btn btn-outline-danger">Envoyer</button>
                                 </form>`
 
+        var comTemplate = `
+            <div class="card my-2">
+                <div class="card-body">
+                    <span class="h4">%auteur%</span><small>Le %date%</small>
+                    <hr>
+                    <p>%contenu%</p>
+                </div>
+            </div>
+        `
 
         if (!sessionStorage.getItem("session")) {
             $('#loginDiv').show()
@@ -225,6 +266,18 @@
         $('#loginForm').submit(login)
 
         $('#createPost').submit(makePost)
+
+        $('#toTheMur').click(function (event) {
+            event.preventDefault()
+            generateWall()
+        })
+
+        $('#exitUSSR').click(function (event) {
+            event.preventDefault()
+            sessionStorage.removeItem('session')
+            $('#wallDiv').hide()
+            $('#loginDiv').show()
+        })
 
 
         function register(event) {
@@ -412,10 +465,20 @@
             $('.liker').click(liker)
             $('.commenter').unbind('click', showComForm)
             $('.commenter').click(showComForm)
+            $('.afficheCom').unbind('click', showComs)
+            $('.afficheCom').click(showComs)
+            $('.afficheLike').unbind('click', showLikes)
+            $('.afficheLike').click(showLikes)
+
 
         }
 
         function generateWall(userId = JSON.parse(sessionStorage.getItem('session')).id) {
+            if (userId == JSON.parse(sessionStorage.getItem('session')).id) {
+                $('#formContainer').show()
+            } else {
+                $('#formContainer').hide()
+            }
             let x
             for (x in postsObj.posts) {
                 var currentPost = postsObj.posts[x]
@@ -424,6 +487,25 @@
                     generatePost(currentPost)
                 }
             }
+
+            var col3 = $('#userList')
+            var texte = "<ul>"
+            let y
+            for (y in usersObj.users) {
+                let currentUser = usersObj.users[y]
+                if (currentUser.id != JSON.parse(sessionStorage.getItem('session')).id) {
+                    texte += `<li><a href="" class="goTo text-warning" data-id="${currentUser.id}">${currentUser.pseudo}</a> </li>`
+                }
+            }
+            texte += "</ul>"
+            col3.html(texte)
+            $('.goTo').unbind('click')
+            $('.goTo').click(function (event) {
+                event.preventDefault()
+                var userId = $(this).attr('data-id')
+                $('#wallContainer').empty()
+                generateWall(userId)
+            })
         }
 
         function ajouteUnZero(number) {
@@ -454,13 +536,15 @@
                 $('#comForm').remove()
             }
             btnContainer.after(formTemplate)
-            $('#comForm').submit(commenter)
+            $('#comForm').submit(function (event) {
+                commenter(event, btnCom)
+            })
 
             //gestion d'event
 
         }
 
-        function commenter(event) {
+        function commenter(event, bouttonCom) {
             event.preventDefault()
             var commentaireContenu = $('#commentaireInput').val()
             if (commentaireContenu == "") {
@@ -468,7 +552,7 @@
             } else {
                 //on va ajouter le commentaire
                 //etape 1 identifier le post
-                var idPost = $(this).parent().children().first().attr("data-id")
+                var idPost = bouttonCom.parent().parent().attr("data-id")
                 //etape 2 on construit notre objet commentaire :
                 // auteur
                 // contenu
@@ -480,12 +564,17 @@
                     contenu: commentaireContenu,
                     date: (new Date()).getTime()
                 }
+
                 let x
-                for(x in postsObj.posts){
+                for (x in postsObj.posts) {
                     let actualPost = postsObj.posts[x]
-                    if(actualPost.id == idPost){
+                    if (actualPost.id == idPost) {
                         actualPost.coms.push(commentaire)
                         savePost()
+                        bouttonCom.text(actualPost.coms.length + " Commenter")
+                        $('#comForm').remove()
+                        generateCom(commentaire, idPost)
+
                     }
                 }
             }
@@ -518,6 +607,82 @@
                     savePost()
                 }
             }
+        }
+
+        function generateCom(com, postId) {
+            var postRow = $(`[data-id=${postId}]`).first()
+            var comDate = new Date(com.date)
+
+
+            var dateStr = ""
+                + ajouteUnZero(comDate.getDate()) + "/"
+                + ajouteUnZero(comDate.getMonth() + 1) + "/"
+                + comDate.getFullYear() + " à " +
+                ajouteUnZero(comDate.getHours())
+                + ":"
+                + ajouteUnZero(comDate.getMinutes())
+
+            var texte = comTemplate
+            texte = texte.replace(/%auteur%/g, getUserById(com.auteur).pseudo)
+            texte = texte.replace(/%contenu%/g, com.contenu)
+            texte = texte.replace(/%date%/g, dateStr)
+
+            postRow.parent().children().last().prepend(texte)
+        }
+
+        function showComs(event) {
+            event.preventDefault()
+            //identifier sur quel post o a cliquer
+            var link = $(this)
+            var idPost = link.parent().parent().attr('data-id')
+            var post = getPostById(idPost)
+            var comContainer = link.parent().parent().parent().children().last()
+            if (comContainer.text() == "") {
+                if (post == null) {
+                    console.log("Normalement on devrait pas arriver ici ;) ")
+                    return;
+                } else {
+                    //on va afficher les commentaires lié au post
+                    let x
+                    for (x in post.coms) {
+                        var com = post.coms[x]
+                        generateCom(com, idPost)
+                    }
+                }
+            } else {
+                comContainer.empty()
+            }
+
+        }
+
+        function showLikes(event) {
+            event.preventDefault()
+            var link = $(this)
+            var idPost = link.parent().parent().attr('data-id')
+            var post = getPostById(idPost)
+            var texte = "<ul>"
+            let x
+            for (x in post.likes) {
+                var currentLike = post.likes[x]
+                texte += "<li>" + getUserById(currentLike).pseudo + "</li>"
+            }
+            texte += "</ul>"
+
+            $('#likeContainer').html(texte)
+
+            $('#modalLike').modal('show')
+
+        }
+
+        function getPostById(idPost) {
+            let x
+            for (x in postsObj.posts) {
+                let actualPost = postsObj.posts[x]
+                if (actualPost.id == idPost) {
+                    return actualPost
+                }
+            }
+            return null
         }
 
         //LOCALSTORAGE :

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<script>
+
+
+    function responseAsync() {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve(10)
+            }, 5000)
+        })
+    }
+
+    function responseNonAsync(){
+        setTimeout(function () {
+            console.log("10");
+            return 10
+        }, 5000 )
+    }
+
+
+    async function toto() {
+        console.log("Tu as : ");
+        //var age = responseNonAsync()
+        var age = await responseAsync()
+        console.log(age);
+
+        console.log("Fuis la cave de Marine");
+
+
+    }
+
+    toto()
+
+</script>
+
+</body>
+</html>
